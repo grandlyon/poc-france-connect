@@ -1,0 +1,37 @@
+# Chemin absolu de l'application sur le serveur
+APP_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+
+# Mapping HAProxy de l'application
+APP_PATH = '/france-connect'
+
+#
+# Configuration des paramètres OpenID pour France Connect
+#
+module FRANCE_CONNECT
+  CONFIG = {
+    scope: [:openid, :profile],
+    response_type: :code,
+    state: true, # Requis par France connect
+    nonce: true, # Requis par France connect
+    issuer: 'http://fcp.integ01.dev-franceconnect.fr', # L'environnement d'intégration utilise 'http' et pas 'https'
+    # Ce qui ne sera peut-être pas le cas sur l'environnement de production. (voir si il ne faudra pas le canger en production.)
+    client_auth_method: 'Custom', # France connect n'utilise pas l'authent "BASIC".
+    client_signing_alg: :HS256,   # Format de hashage France Connect
+    client_options: {
+      identifier: 'Ici l id fournit par France Connect',
+      # utile pour la gem omniauth-openid-connect
+      secret: 'Ici le secret fournit par France Connect',
+      # Utile pour la gem openid_connect
+      client_secret: 'Ici le secret fournit par France Connect',
+      port: 443,
+      scheme: 'https',
+      host: 'fcp.integ01.dev-franceconnect.fr',
+      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback',
+      # Tous les points d'entrée sont à configurer explicitement pour ne pas utiliser le param 'discover'
+      # qui n'est pas configuré côté France Connect.
+      authorization_endpoint: '/api/v1/authorize',
+      token_endpoint: '/api/v1/token',
+      userinfo_endpoint: '/api/v1/userinfo'
+    }
+  }
+end
