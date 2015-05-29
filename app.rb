@@ -27,7 +27,7 @@ class SinatraApp < Sinatra::Base
   [:get, :post].each do |method|
     send method, '/auth/:provider/callback' do
       # Ici on stocke le user connecté dans la session
-      # on pourrait le mettre en base et en profiter pour mettre a jour des données ou
+      # on pourrait le mettre en base et en profiter pour mettre à jour des données ou
       # les enrichir avec des données locales
       user = request.env['omniauth.auth']['extra']['raw_info']
       session[:user] = user
@@ -38,7 +38,7 @@ class SinatraApp < Sinatra::Base
 
   get '/mon_profil' do
     if session[:user]
-      # on retrouve le user connecté (souvnet en base, ici en session pour commodité)
+      # on retrouve le user connecté (souvent en base, ici en session pour commodité)
       @user = session[:user]
       erb :userinfo
     else
