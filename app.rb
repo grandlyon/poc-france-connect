@@ -29,9 +29,8 @@ class SinatraApp < Sinatra::Base
       # Ici on stocke le user connecté dans la session
       # on pourrait le mettre en base et en profiter pour mettre à jour des données ou
       # les enrichir avec des données locales
-      user = request.env['omniauth.auth']['extra']['raw_info']
-      session[:user] = user
-
+      session[:user] = request.env['omniauth.auth']['extra']['raw_info']
+      session[:crendentials] = request.env['omniauth.auth']['credentials'].reject { |k| k == 'id_token' }
       redirect to '/mon_profil'
     end
   end
@@ -40,6 +39,7 @@ class SinatraApp < Sinatra::Base
     if session[:user]
       # on retrouve le user connecté (souvent en base, ici en session pour commodité)
       @user = session[:user]
+      @credentials = session[:crendentials]
       erb :userinfo
     else
       erb 'Veuillez vous connecter'
