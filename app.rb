@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler'
 
-Bundler.setup :default, :development, :example
 require 'sinatra'
 require 'sinatra/advanced_routes'
 require 'omniauth'
