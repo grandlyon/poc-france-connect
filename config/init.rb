@@ -2,12 +2,12 @@
 
 require 'logger'
 
-# DIR Method
-def __DIR__(*args)
+# dir Method
+def __dir__(*args)
   filename = caller[0][/^(.*):/, 1]
   dir = File.expand_path(File.dirname(filename))
   ::File.expand_path(::File.join(dir, *args.map(&:to_s)))
 end
 
 puts 'loading config/options'
-require __DIR__('options')
+require __dir__('options')

@@ -13,8 +13,7 @@ module FRANCE_CONNECT
     response_type: :code,
     state: true, # Requis par France connect
     nonce: true, # Requis par France connect
-    issuer: 'http://fcp.integ01.dev-franceconnect.fr', # L'environnement d'intégration utilise 'http' et pas 'https'
-    # Ce qui ne sera peut-être pas le cas sur l'environnement de production. (voir si il ne faudra pas le changer en production.)
+    issuer: 'https://fcp.integ01.dev-franceconnect.fr', # L'environnement d'intégration utilise à présent 'https'
     client_auth_method: 'Custom', # France connect n'utilise pas l'authent "BASIC".
     client_signing_alg: :HS256,   # Format de hashage France Connect
     client_options: {
@@ -26,12 +25,18 @@ module FRANCE_CONNECT
       port: 443,
       scheme: 'https',
       host: 'fcp.integ01.dev-franceconnect.fr',
-      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback',
+      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback/?scope=revenu_fiscal_de_reference', 
+      # TODO : Trouver le moyen de mettre le scope ailleurs que dans la conf.
       # Tous les points d'entrée sont à configurer explicitement pour ne pas utiliser le param 'discover'
       # qui n'est pas configuré côté France Connect.
       authorization_endpoint: '/api/v1/authorize',
       token_endpoint: '/api/v1/token',
       userinfo_endpoint: '/api/v1/userinfo'
+    },
+    data_provider: {
+      name:  "OpenDataSoft",
+      url:   "http://datafranceconnect.opendatasoft.com/api/records/1.0/search?dataset=dgfip_exercices",
+      scope: "revenu_fiscal_de_reference"
     }
   }
 end
