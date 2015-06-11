@@ -32,3 +32,24 @@
 	  </div>
   </div>
 </div>
+
+<div class="row">
+	<div class="col-md-11">
+		<% if @data %>
+			<table class="table table-stripped">
+			<% @data['records'][0]['fields'].each { | k, v | %>
+				<th><%="#{k}"%></th> 
+			<% } %>
+			<% @data['records'].each { | r | %>
+				<tr>
+					<% r['fields'].each { | k, value | %>
+					<td><%=" #{value}" || "&nbsp;" %></td> 
+					<% } %>
+				</tr> 
+			<% } %>
+			</table>
+		<%else %>
+		No Data Available !
+		<%end %>
+	</div>
+</div>

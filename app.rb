@@ -8,6 +8,7 @@ require 'omniauth-openid'
 require 'omniauth-openid-connect'
 require 'openid/store/filesystem'
 require 'openid/fetchers'
+require 'rest_client'
 
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
@@ -24,12 +25,13 @@ class SinatraApp < Sinatra::Base
   end
 
   [:get, :post].each do |method|
-    send method, '/auth/:provider/callback' do
+    send method, '/auth/:provider/callback/?' do
       # Ici on stocke le user connecté dans la session
       # on pourrait le mettre en base et en profiter pour mettre à jour des données ou
       # les enrichir avec des données locales
       session[:user] = request.env['omniauth.auth']['extra']['raw_info']
-      session[:crendentials] = request.env['omniauth.auth']['credentials'].reject { |k| k == 'id_token' }
+      session[:crendentials] = request.env['omniauth.auth']['credentials']
+      @code = request.env['code']
       redirect to '/mon_profil'
     end
   end
@@ -38,7 +40,14 @@ class SinatraApp < Sinatra::Base
     if session[:user]
       # on retrouve le user connecté (souvent en base, ici en session pour commodité)
       @user = session[:user]
-      @credentials = session[:crendentials]
+      @credentials = session[:crendentials].reject { |k| k == 'id_token' }
+      # Récupération de doonées
+      http = Net::HTTP.new("datafranceconnect.opendatasoft.com", 80) # TODO : extract host name and port from settings
+      puts FRANCE_CONNECT::CONFIG[:data_provider].inspect
+      puts @credentials['token'].inspect
+      req = Net::HTTP::Get.new("#{FRANCE_CONNECT::CONFIG[:data_provider][:url]}&scope=#{FRANCE_CONNECT::CONFIG[:data_provider][:scope]}", { 'Authorization' => "Bearer #{@credentials['token']}"})
+      res = http.request(req)
+      @data = JSON.parse(res.body)
       erb :userinfo
     else
       erb 'Veuillez vous connecter'
