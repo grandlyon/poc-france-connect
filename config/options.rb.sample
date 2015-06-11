@@ -13,8 +13,7 @@ module FRANCE_CONNECT
     response_type: :code,
     state: true, # Requis par France connect
     nonce: true, # Requis par France connect
-    issuer: 'http://fcp.integ01.dev-franceconnect.fr', # L'environnement d'intégration utilise 'http' et pas 'https'
-    # Ce qui ne sera peut-être pas le cas sur l'environnement de production. (voir si il ne faudra pas le changer en production.)
+    issuer: 'https://fcp.integ01.dev-franceconnect.fr', # L'environnement d'intégration utilise à présent 'https'
     client_auth_method: 'Custom', # France connect n'utilise pas l'authent "BASIC".
     client_signing_alg: :HS256,   # Format de hashage France Connect
     client_options: {
