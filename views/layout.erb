@@ -26,12 +26,29 @@
     </head>
 
     <body>
-	    <div class="container-fluid">
-	        <div class="jumbotron">
-	        	<h3>Preuve de concept France Connect</h3>
-	        </div>
+
+    <!-- Begin page content -->
+    <div class="container">
+      <!--div class="page-header"-->
+        <div class="row">
+        	<div class="col-md-3">
+        		<img class="pull-left" src="img/logo.png" />
+        	</div>
+        	<div class="col-md-9">
+        		<img src="img/header.png" />
+        	</div>
+       	</div>
+      <!--/div-->
+
 			<%= yield %>
-	    </div>
+
+	    <footer class="footer">
+	        <div class="col-md-9">
+	        	<img src="img/footer.png"/>
+	       	</div>
+	        <div class="col-md-3"></div>
+	    </footer>		        
+    </div>
     </body>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
