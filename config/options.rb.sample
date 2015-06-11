@@ -25,12 +25,18 @@ module FRANCE_CONNECT
       port: 443,
       scheme: 'https',
       host: 'fcp.integ01.dev-franceconnect.fr',
-      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback',
+      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback/?scope=revenu_fiscal_de_reference', 
+      # TODO : Trouver le moyen de mettre le scope ailleurs que dans la conf.
       # Tous les points d'entrée sont à configurer explicitement pour ne pas utiliser le param 'discover'
       # qui n'est pas configuré côté France Connect.
       authorization_endpoint: '/api/v1/authorize',
       token_endpoint: '/api/v1/token',
       userinfo_endpoint: '/api/v1/userinfo'
+    },
+    data_provider: {
+      name:  "OpenDataSoft",
+      url:   "http://datafranceconnect.opendatasoft.com/api/records/1.0/search?dataset=dgfip_exercices",
+      scope: "revenu_fiscal_de_reference"
     }
   }
 end
