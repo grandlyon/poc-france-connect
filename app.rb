@@ -43,8 +43,6 @@ class SinatraApp < Sinatra::Base
       @credentials = session[:crendentials].reject { |k| k == 'id_token' }
       # Récupération de doonées
       http = Net::HTTP.new("datafranceconnect.opendatasoft.com", 80) # TODO : extract host name and port from settings
-      puts FRANCE_CONNECT::CONFIG[:data_provider].inspect
-      puts @credentials['token'].inspect
       req = Net::HTTP::Get.new("#{FRANCE_CONNECT::CONFIG[:data_provider][:url]}&scope=#{FRANCE_CONNECT::CONFIG[:data_provider][:scope]}", { 'Authorization' => "Bearer #{@credentials['token']}"})
       res = http.request(req)
       @data = JSON.parse(res.body)

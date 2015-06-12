@@ -37,7 +37,7 @@
 	<div class="col-md-11">
 		<% if @data %>
 			<table class="table table-stripped">
-			<% @data['records'][0]['fields'].each { | k, v | %>
+			<% @data['records'].first['fields'].each { | k, v | %>
 				<th><%="#{k}"%></th> 
 			<% } %>
 			<% @data['records'].each { | r | %>
