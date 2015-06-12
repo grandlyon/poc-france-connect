@@ -35,7 +35,8 @@ module FRANCE_CONNECT
     },
     data_provider: {
       name:  "OpenDataSoft",
-      url:   "http://datafranceconnect.opendatasoft.com/api/records/1.0/search?dataset=dgfip_exercices",
+      host:   "datafranceconnect.opendatasoft.com",
+      uri:   "/api/records/1.0/search?dataset=dgfip_exercices",
       scope: "revenu_fiscal_de_reference"
     }
   }
