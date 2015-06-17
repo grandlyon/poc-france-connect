@@ -20,6 +20,18 @@ class SinatraApp < Sinatra::Base
     set :protection, true
   end
 
+  helper do
+    # Récupération de doonées
+    def receive_data()
+      http = Net::HTTP.new(FRANCE_CONNECT::CONFIG[:data_provider][:host], 80)
+      # puts FRANCE_CONNECT::CONFIG[:data_provider].inspect
+      # puts @credentials['token'].inspect
+      req = Net::HTTP::Get.new("#{FRANCE_CONNECT::CONFIG[:data_provider][:url]}&scope=#{FRANCE_CONNECT::CONFIG[:data_provider][:scope]}", { 'Authorization' => "Bearer #{@credentials['token']}"})
+      res = http.request(req)
+      JSON.parse(res.body)
+    end
+  end
+
   get '/' do
     erb :index
   end
@@ -32,26 +44,26 @@ class SinatraApp < Sinatra::Base
       session[:user] = request.env['omniauth.auth']['extra']['raw_info']
       session[:crendentials] = request.env['omniauth.auth']['credentials']
       @code = request.env['code']
-      redirect to '/mon_profil'
+      redirect to '/etape1'
     end
   end
 
-  get '/mon_profil' do
+  get '/etape1' do
     if session[:user]
       # on retrouve le user connecté (souvent en base, ici en session pour commodité)
       @user = session[:user]
       @credentials = session[:crendentials].reject { |k| k == 'id_token' }
-      # Récupération de doonées
-      http = Net::HTTP.new("datafranceconnect.opendatasoft.com", 80) # TODO : extract host name and port from settings
-      puts FRANCE_CONNECT::CONFIG[:data_provider].inspect
-      puts @credentials['token'].inspect
-      req = Net::HTTP::Get.new("#{FRANCE_CONNECT::CONFIG[:data_provider][:url]}&scope=#{FRANCE_CONNECT::CONFIG[:data_provider][:scope]}", { 'Authorization' => "Bearer #{@credentials['token']}"})
-      res = http.request(req)
-      @data = JSON.parse(res.body)
-      erb :userinfo
+      # @data = receive_data
+      erb :etape1
     else
-      erb 'Veuillez vous connecter'
+      erb 'Veuillez vous connecter' # TODO : Faire un erb de connexion
     end
+
+    get '/etape2' do
+      # @data = receive_data
+      erb :etape2
+    end
+
   end
 end
 
