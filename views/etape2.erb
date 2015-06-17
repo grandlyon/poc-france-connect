@@ -1,0 +1,110 @@
+<div class="row">
+  <div class="col-md-11">
+	  <div class="panel panel-default">
+	  	<div class="panel-heading">Demande de bac vert > Connexion > finalisation du dossier</div>
+		  <div class="panel-body">
+			<% if @data %>
+				<table class="table table-stripped">
+				<tr>
+					<td>
+						<b>
+						<% if @data['records'][0]['fields']['sexe'] == 'female' %>Madame<% else %>Monsieur<% end %>
+						<%= "#{@data['records'][0]['fields']['nom_de_naissance']}" %> <%= "#{@data['records'][0]['fields']['prenoms']}" %>
+						</b>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Mail où l'on peut vous contacter : <span class="label label-info"><%= "#{@data['records'][0]['fields']['mail']}" %></span>
+					</td>
+				</tr> 
+				<tr>
+					<td>
+						<div class="alert alert-info" role="alert">
+							Votre adresse postale déclarée à l'administration : <br/>
+							<b><%= "#{@data['records'][0]['fields']['adresse']}" %><br/>
+							<%= "#{@data['records'][0]['fields']['code_postal'].to_s[0,5]}" %> <%= "#{@data['records'][0]['fields']['commune']}" %></b>
+						</div>
+					</td>
+				</tr> 
+				<tr>
+					<td>
+						<% if @data['records'][0]['fields']['justif_de_domicile'] !='' %>
+							<div class="alert alert-info" role="alert">
+								<a href='<%= "#{@data['records'][0]['fields']['justif_de_domicile']}" %>'><%= "#{@data['records'][0]['fields']['hypothese_contact']}" %></a>
+							</div>
+						<% else %>
+							<div class="alert alert-warning" role="alert">Aucun justificatif de domicile disponible en ligne.</div>
+						<% end %>
+					</td>
+				</tr> 
+				</table>
+			<%else %>
+			# TODO : Traiter les erreurs éventuelles de connexion ou de données non trouvées
+			Aucune donnée transmise pas ce fournisseur de données. Problème de connexion ?
+			<%end %>
+
+			<% if @qf %>
+				<table class="table table-stripped">
+				<tr>
+					<td>
+						<div class="alert alert-warning" role="alert">
+							Vous avez <%= "#{@qf['records'][0]['fields']['nombre_d_enfants']}" %> 
+							enfant<%= "s" unless @qf['records'][0]['fields']['nombre_d_enfants'] < 2 %> à charge.<br/>
+							Votre quotien familial est : <b><%= "#{@qf['records'][0]['fields']['quotient_familial'].round(2)}" %> </b>.<br/>
+							Vous percevez des prestations mensuelles de 
+							<b><%= "#{@qf['records'][0]['fields']['prestations_caf_mensuelles']}" %> €</b><br/><br/>
+						</div>
+					</td>
+				</tr>
+					<td>
+						<% if @qf['records'][0]['fields']['attestation_droits'] !='' %>
+							<div class="alert alert-warning" role="alert">
+								<a href='<%= "#{@qf['records'][0]['fields']['attestation_droits']}" %>'>Téléchargez votre attestation de droits</a>
+							</div>
+						<% else %>
+							<div class="alert alert-warning" role="alert">Aucune attestation de droit disponible.</div>
+						<% end %>
+					</td>
+				</tr> 
+				</table>
+			<%else %>
+			# TODO : Traiter les erreurs éventuelles de connexion ou de données non trouvées
+			Aucune donnée transmise pas ce fournisseur de données. Problème de connexion ?
+			<%end %>
+
+			<table class="table table-stripped">
+				<tr>
+					<td>
+						<div class="alert alert-success" role="alert">
+							<u>Informations sur votre demande de bac vert :</u><br/>
+
+							<ul>
+								<li>Votre domiciliation actuelle vous permet d'être éligible à la demande de bac vert</li>
+								<% if @qf['records'][0]['fields']['nombre_d_enfants'] > 3 %>
+									<li>Votre bac vert sera grande taille.</li>
+								<% else %>
+									<li>Votre bac vert sera petite taille.</li>
+								<% end %>
+								<li>Le bac vert vous sera mis à disposition à titre gratuit.</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<table>
+			<!--
+			<% @qf['records'][0]['fields'].each { | k, v | %>
+				<tr>
+					<th><%="#{k}"%></th><td><%="#{v}"%></td>
+				</tr>
+			<% } %>
+			</table>
+			-->
+
+
+		  </div>
+	  </div>
+  </div>
+</div>
