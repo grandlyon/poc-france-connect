@@ -20,16 +20,18 @@ class SinatraApp < Sinatra::Base
     set :protection, true
   end
 
-  helper do
+  helpers do
     # Récupération de doonées
-    def receive_data()
+    def receive_data( token, qry )
       http = Net::HTTP.new(FRANCE_CONNECT::CONFIG[:data_provider][:host], 80)
-      # puts FRANCE_CONNECT::CONFIG[:data_provider].inspect
-      # puts @credentials['token'].inspect
-      req = Net::HTTP::Get.new("#{FRANCE_CONNECT::CONFIG[:data_provider][:url]}&scope=#{FRANCE_CONNECT::CONFIG[:data_provider][:scope]}", { 'Authorization' => "Bearer #{@credentials['token']}"})
+      puts "http://#{FRANCE_CONNECT::CONFIG[:data_provider][:host]}#{FRANCE_CONNECT::CONFIG[:data_provider][:uri]}&#{qry}"
+      req = Net::HTTP::Get.new("http://#{FRANCE_CONNECT::CONFIG[:data_provider][:host]}#{FRANCE_CONNECT::CONFIG[:data_provider][:uri]}&#{qry}", { 'Authorization' => "Bearer #{token}"})
       res = http.request(req)
       JSON.parse(res.body)
     end
+
+    @@scope = "ods_etatcivil_cnf"
+
   end
 
   get '/' do
@@ -53,18 +55,22 @@ class SinatraApp < Sinatra::Base
       # on retrouve le user connecté (souvent en base, ici en session pour commodité)
       @user = session[:user]
       @credentials = session[:crendentials].reject { |k| k == 'id_token' }
-      # @data = receive_data
       erb :etape1
     else
       erb 'Veuillez vous connecter' # TODO : Faire un erb de connexion
     end
 
-    get '/etape2' do
-      # @data = receive_data
-      erb :etape2
-    end
-
   end
+
+  get '/etape2' do
+    @credentials = session[:crendentials].reject { |k| k == 'id_token' }
+    puts session.inspect
+    @data = receive_data @credentials['token'], 'q=nom_de_naissance%3D' + session[:user]['family_name']
+    puts @data.inspect
+    erb :etape2
+  end
+
+
 end
 
 SinatraApp.run! if __FILE__ == $PROGRAM_NAME

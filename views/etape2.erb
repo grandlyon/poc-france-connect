@@ -5,17 +5,50 @@
 		  <div class="panel-body">
 			<% if @data %>
 				<table class="table table-stripped">
-				<% @data['records'][0]['fields'].each { | k, v | %>
-					<th><%="#{k}"%></th> 
-				<% } %>
-				<% @data['records'].each { | r | %>
-					<tr>
-						<% r['fields'].each { | k, value | %>
-						<td><%=" #{value}" || "&nbsp;" %></td> 
-						<% } %>
-					</tr> 
-				<% } %>
+
+				<tr>
+					<td>
+						<b>
+						<% if @data['records'][0]['fields']['sexe'] == 'female' %>Madame<% else %>Monsieur<% end %>
+						<%= "#{@data['records'][0]['fields']['nom_de_naissance']}" %> <%= "#{@data['records'][0]['fields']['prenoms']}" %>
+						</b>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Mail où l'on peut vous contacter : <span class="label label-info"><%= "#{@data['records'][0]['fields']['mail']}" %></span>
+					</td>
+				</tr> 
+				<tr>
+					<td>
+						<div class="alert alert-info" role="alert">
+							Votre adresse postale déclarée à l'administration : <br/>
+							<b><%= "#{@data['records'][0]['fields']['adresse']}" %><br/>
+							<%= "#{@data['records'][0]['fields']['code_postal'].to_s[0,5]}" %> <%= "#{@data['records'][0]['fields']['commune']}" %></b>
+						</div>
+					</td>
+				</tr> 
+				<tr>
+					<td>
+						<% if @data['records'][0]['fields']['justif_de_domicile'] !='' %>
+							<div class="alert alert-info" role="alert">
+								<a href='<%= "#{@data['records'][0]['fields']['justif_de_domicile']}" %>'><%= "#{@data['records'][0]['fields']['hypothese_contact']}" %></a>
+							</div>
+						<% else %>
+							<div class="alert alert-warning" role="alert">Pas de justificatif de domicile disponible.</div>
+						<% end %>
+					</td>
+				</tr> 
 				</table>
+				<!--
+				<% @data['records'][0]['fields'].each { | k, v | %>
+					<tr>
+						<th><%="#{k}"%></th><td><%="#{v}"%></td>
+					</tr>
+				<% } %>
+				-->
+
+
 			<%else %>
 			# TODO : Traiter les erreurs éventuelles de connexion ou de données non trouvées
 			No Data Available !

@@ -4,15 +4,21 @@
 	  <div class="panel panel-default">
 	  	<div class="panel-heading">Etape 1</div>
 		  <div class="panel-body">
-		  	<p>Bonjour, </p>
-				<table class="table table-striped">
-				  <% for k, v in @user %>
-				    <tr>
-				    	<td><%= k %></td>
-				    	<td><%= v%></td>
-			    	</tr>
-				  <% end %>
-				</table>
+		  	<p>Bonjour 
+		  	<% if @user['gender'] == 'female' %>
+		  		Madame
+		  	<% else %>
+		  		Monsieur
+		  	<% end %>	
+		  	<%= "#{@user['given_name']} #{@user['family_name']}" %>
+		  	</p>
+		  	<p>
+				Pour cette procédure, la Métropole a besoin d'accéder à des données vous concernant, sur le site des impôts et d'AMELI.
+			</p>
+			<p>
+				<a href='/' class="btn btn-default btn-sm"><span class="glyphicon glyphicon-home"></span> Revenir</a>
+				<a href='/etape2' class="btn btn-primary btn-sm">Poursuivre la démarche &#155;</a>
+			</p>
 		  </div>
 	  </div>
   </div>
@@ -21,6 +27,14 @@
 	  <div class="panel panel-default">
 	  	<div class="panel-heading">Debug panel</div>
 		  <div class="panel-body">
+				<table class="table table-striped">
+				  <% for k, v in @user %>
+				    <tr>
+				    	<td><%= k %></td>
+				    	<td><%= v%></td>
+			    	</tr>
+				  <% end %>
+				</table>
 				<table class="table table-striped">
 				  <% for k, v in @credentials %>
 				    <tr>
