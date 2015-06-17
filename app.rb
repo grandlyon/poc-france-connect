@@ -10,6 +10,11 @@ require 'openid/store/filesystem'
 require 'openid/fetchers'
 require 'rest_client'
 
+require 'base64'
+require 'cgi'
+require 'openssl'
+
+
 # Application Sinatra servant de base
 class SinatraApp < Sinatra::Base
   configure do
@@ -18,6 +23,41 @@ class SinatraApp < Sinatra::Base
     set :public_folder, proc { File.join(root, 'public') }
     set :inline_templates, true
     set :protection, true
+  end
+
+
+  helpers do
+    # signe une requête
+    def sign( service, service_url, args )
+      @app_id = 'SACOCHE'
+      @api_key = 'REGg3iFRmUDqEK/JKgo4Qgj8bDeOQEuhzFoZ8Z30RJo='
+      @api_url = 'https://v3dev.laclasse.com/api'
+      @url = 'app/users/'
+      uri = @api_url
+      # remove "/" symbole
+      uri = uri.chop if uri[ -1, 1 ] == '/'
+      service = @url
+      service += service_url unless service_url.nil?
+      service = service.chop if service[ -1, 1 ] == '/'
+      service.slice!(0) if service[0] == '/'
+      timestamp = Time.now.getutc.strftime('%FT%T')
+      canonical_string = "#{uri}/#{service}?"
+      canonical_string += Hash[ args.sort ]
+      .map { |key, value| "#{key}=#{value.is_a?( String ) ? CGI.escape(value) : value}" }
+      .join( '&' )
+      canonical_string += ";#{timestamp};#{@app_id}"
+      puts "args #{args} , canonical_string #{canonical_string}"
+      digest = OpenSSL::Digest.new( 'sha1' )
+      digested_message = Base64.encode64( OpenSSL::HMAC.digest( digest, @api_key, canonical_string ) )
+      query = args.map { |key, value| "#{key}=#{value.is_a?( String ) ? CGI.escape(value) : value}" }.join( '&' )
+      signature = { app_id: @app_id,
+                    timestamp: timestamp,
+                    signature: digested_message }
+      .map { |key, value| "#{key}=#{value.is_a?( String ) ? CGI.escape(value) : value}" }
+      .join( ';' )
+      .chomp
+      "#{uri}/#{service}?#{query};#{signature}"
+    end
   end
 
   get '/' do
@@ -50,6 +90,12 @@ class SinatraApp < Sinatra::Base
     else
       erb 'Veuillez vous connecter'
     end
+  end
+
+  get '/test' do
+    req = sign 'app/users/', "123" , 'expand' => 'true'  #params[:id]
+    puts req
+    erb "<hr><a href='#{req}' target='_blank'>#{req}</a><hr>"
   end
 end
 
