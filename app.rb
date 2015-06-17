@@ -22,10 +22,10 @@ class SinatraApp < Sinatra::Base
 
   helpers do
     # Récupération de doonées
-    def receive_data( token, qry )
-      http = Net::HTTP.new(FRANCE_CONNECT::CONFIG[:data_provider][:host], 80)
-      puts "http://#{FRANCE_CONNECT::CONFIG[:data_provider][:host]}#{FRANCE_CONNECT::CONFIG[:data_provider][:uri]}&#{qry}"
-      req = Net::HTTP::Get.new("http://#{FRANCE_CONNECT::CONFIG[:data_provider][:host]}#{FRANCE_CONNECT::CONFIG[:data_provider][:uri]}&#{qry}", { 'Authorization' => "Bearer #{token}"})
+    def receive_data( dataset_name, token, qry )
+      http = Net::HTTP.new(FRANCE_CONNECT::CONFIG[:data_providers][dataset_name][:host], 80)
+      puts "http://#{FRANCE_CONNECT::CONFIG[:data_providers][dataset_name][:host]}#{FRANCE_CONNECT::CONFIG[:data_providers][dataset_name][:uri]}&#{qry}"
+      req = Net::HTTP::Get.new("http://#{FRANCE_CONNECT::CONFIG[:data_providers][dataset_name][:host]}#{FRANCE_CONNECT::CONFIG[:data_providers][dataset_name][:uri]}&#{qry}", { 'Authorization' => "Bearer #{token}"})
       res = http.request(req)
       JSON.parse(res.body)
     end
@@ -65,7 +65,8 @@ class SinatraApp < Sinatra::Base
   get '/etape2' do
     @credentials = session[:crendentials].reject { |k| k == 'id_token' }
     puts session.inspect
-    @data = receive_data @credentials['token'], 'q=nom_de_naissance%3D' + session[:user]['family_name']
+    @data = receive_data 'justificatif_de_domicile', @credentials['token'], 'q=nom_de_naissance%3D' + session[:user]['family_name']
+    @qf = receive_data 'quotien_familial', @credentials['token'], 'q=nom_de_naissance%3D' + session[:user]['family_name']
     puts @data.inspect
     erb :etape2
   end
