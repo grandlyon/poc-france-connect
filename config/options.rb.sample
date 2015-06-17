@@ -9,7 +9,7 @@ APP_PATH = '/france-connect'
 #
 module FRANCE_CONNECT
   CONFIG = {
-    scope: [:openid, :profile],
+    scope: [:openid, :profile, :ods_etatcivil_cnf, :ods_fai_contact, :ods_caf_qf ],
     response_type: :code,
     state: true, # Requis par France connect
     nonce: true, # Requis par France connect
@@ -25,7 +25,7 @@ module FRANCE_CONNECT
       port: 443,
       scheme: 'https',
       host: 'fcp.integ01.dev-franceconnect.fr',
-      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback/?scope=revenu_fiscal_de_reference', 
+      redirect_uri: 'http://localhost:9292/auth/openidconnect/callback/?scope=ods_fai_contact',  # ods_etatcivil_cnf',
       # TODO : Trouver le moyen de mettre le scope ailleurs que dans la conf.
       # Tous les points d'entrée sont à configurer explicitement pour ne pas utiliser le param 'discover'
       # qui n'est pas configuré côté France Connect.
@@ -33,11 +33,18 @@ module FRANCE_CONNECT
       token_endpoint: '/api/v1/token',
       userinfo_endpoint: '/api/v1/userinfo'
     },
-    data_provider: {
-      name:  "OpenDataSoft",
-      host:   "datafranceconnect.opendatasoft.com",
-      uri:   "/api/records/1.0/search?dataset=dgfip_exercices",
-      scope: "revenu_fiscal_de_reference"
+    data_providers: {
+      'justificatif_de_domicile' =>
+      { 
+        host:   "datafranceconnect.opendatasoft.com",
+        uri:   "/api/records/1.0/search?dataset=fai_contact"
+      },
+
+      'quotien_familial' =>
+      { 
+        host:   "datafranceconnect.opendatasoft.com",
+        uri:   "/api/records/1.0/search?dataset=caf_qf"
+      }
     }
   }
 end
