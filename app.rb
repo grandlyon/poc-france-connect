@@ -101,7 +101,6 @@ class SinatraApp < Sinatra::Base
 
   get '/etape2' do
     @credentials = session[:crendentials].reject { |k| k == 'id_token' }
-    puts session.inspect
     @data = receive_data 'justificatif_de_domicile', @credentials['token'], 'q=nom_de_naissance%3D' + session[:user]['family_name']
     @qf = receive_data 'quotien_familial', @credentials['token'], 'q=nom_de_naissance%3D' + session[:user]['family_name']
     puts @data.inspect

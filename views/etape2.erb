@@ -1,8 +1,8 @@
 <div class="row">
   <div class="col-md-11">
-	  <div class="panel panel-default">
-	  	<div class="panel-heading">Demande de bac vert > Connexion > finalisation du dossier</div>
-		  <div class="panel-body">
+	<div class="panel panel-default">
+	  <div class="panel-heading">Demande de bac vert > Connexion > finalisation du dossier</div>
+		<div class="panel-body">
 			<% if @data %>
 				<table class="table table-stripped">
 				<tr>
@@ -81,7 +81,7 @@
 
 							<ul>
 								<li>Votre domiciliation actuelle vous permet d'être éligible à la demande de bac vert</li>
-								<% if @qf['records'][0]['fields']['nombre_d_enfants'] > 3 %>
+								<% if @qf['records'][0]['fields']['nombre_d_enfants'] > 2 %>
 									<li>Votre bac vert sera de grande taille.</li>
 								<% else %>
 									<li>Votre bac vert sera de petite taille.</li>
@@ -93,18 +93,9 @@
 				</tr>
 			</table>
 
-			<table>
-			<!--
-			<% @qf['records'][0]['fields'].each { | k, v | %>
-				<tr>
-					<th><%="#{k}"%></th><td><%="#{v}"%></td>
-				</tr>
-			<% } %>
-			</table>
-			-->
-
-
-		  </div>
+		</div>
 	  </div>
+	</div>
   </div>
-</div>
+
+
