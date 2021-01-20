@@ -9,5 +9,5 @@ gem 'sinatra-advanced-routes'
 gem 'rubocop'
 gem 'omniauth-openid'
 gem 'omniauth-openid-connect', git: 'https://github.com/jjbohn/omniauth-openid-connect'
-gem 'restclient'
+gem 'rest-client'
 
